@@ -10,10 +10,10 @@ import {
 const Home: NextPage = () => {
   return (
     <main>
-      <Box sx={{ backgroundImage: ''}}>
-        <h1 className="text-3xl">
-          Apexキャラ
-        </h1>
+      <Box sx={{ backgroundImage: '' }}>
+        <Typography variant="h1" component="h1" gutterBottom className="text-3xl">
+          Apexキャラ診断
+        </Typography>
         <Button variant="contained" className="bg-blue-500" size="large">
           <Link href="/diagnosis">
             <a>診断する</a>
