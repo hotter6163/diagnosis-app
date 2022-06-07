@@ -18,7 +18,7 @@ const Home: NextPage = () => {
           src='/apax-logo-with-title.png'
           width={200}
           height={200}
-          gutterBottom
+          alt='apexのLogo'
         />
         <Typography
           variant="h1"

@@ -49,6 +49,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
+  if (!params) {
+    return {
+      notFound: true
+    }
+  }
+
   return {
     props: {
       englishName: params.id
