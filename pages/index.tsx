@@ -12,7 +12,7 @@ const Home: NextPage = () => {
     <main>
       <Box sx={{ backgroundImage: ''}}>
         <h1 className="text-3xl">
-          Apexキャラ診断
+          Apexキャラ
         </h1>
         <Button variant="contained" className="bg-blue-500" size="large">
           <Link href="/diagnosis">
