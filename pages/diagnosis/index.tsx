@@ -5,13 +5,17 @@ import {
   Typography
 } from '@mui/material'
 
-import { fetcherFirestore, assertIsCharacters } from 'app/firebase/firestore'
+import { fetcherFirestore, assertIsCharacters, CharacterType } from 'app/firebase/firestore'
 
-const Diagnosis = ({ regendsList }) => {
+type PageProps = {
+  regendsList: CharacterType[]
+}
+
+const Diagnosis:NextPage<PageProps> = ({ regendsList }) => {
   const renderedRegendsList = regendsList.map(regend => (
     <div key={regend.id}>
       <Typography
-        variant="p"
+        variant="inherit"
         sx={{ display: 'inline' }}
       >
         {regend.name}
@@ -47,7 +51,7 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       regendsList: fetchedData
     }
-  }
+  } 
 }
 
 export default Diagnosis

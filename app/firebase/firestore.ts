@@ -6,14 +6,14 @@ export const db = getFirestore(app)
 
 type FirebaseKeyType = 'character'
 
-type CharacterType = {
+export type CharacterType = {
   id: string
   name: string
   englishName: string
 }
 
 // CharacterType[]のためのアサーション関数
-export const assertIsCharacters = (unknown: any): asserts unknown is CharacterType[] => {
+export function assertIsCharacters(unknown: any): asserts unknown is CharacterType[] {
   if (!Array.isArray(unknown)) throw new Error('assertIsCharacters: 配列ではありません')
   if (!unknown.every((row) => isCharacter(row))) {
     throw new Error('assertIsCharacters: CharacterTypeでない要素があります')

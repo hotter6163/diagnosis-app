@@ -4,7 +4,15 @@ import { Typography } from '@mui/material'
 
 import { fetcherFirestore, assertIsCharacters } from 'app/firebase/firestore'
 
-const Result: NextPage = ({ englishName }) => {
+type Props = {
+  englishName: string
+}
+
+type Params = {
+  id: string
+}
+
+const Result: NextPage<Props> = ({ englishName }) => {
   return (
     <main>
       <Typography variant="h1" component="h1" gutterBottom className="text-3xl">
@@ -41,10 +49,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const { id: englishName } = params
   return {
     props: {
-      englishName
+      englishName: params.id
     }
   }
 };

@@ -30,7 +30,7 @@ const Home: NextPage = () => {
           レジェンド診断
         </Typography>
         <Typography
-          variant="p"
+          variant="inherit"
           component="p"
           gutterBottom
           className="text-2xl text-block font-medium"
