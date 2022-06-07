@@ -25,7 +25,6 @@ export const isCharacter = (unknown: any): boolean => {
   if (unknown === null) return false
   if (typeof unknown !== 'object') return false
 
-  console.log(typeof unknown.id)
   if (typeof unknown.id !== 'string') return false
   if (typeof unknown.name !== 'string') return false
   if (typeof unknown.englishName !== 'string') return false

@@ -1,5 +1,4 @@
 import type { NextPage } from 'next'
-import Head from 'next/head'
 import Link from 'next/link'
 import {
   Box,
@@ -7,10 +6,13 @@ import {
   Typography
 } from '@mui/material'
 
-const Home: NextPage = () => {
+import backgroundImage from 'public/background-top.jpg'
+import { fetcherFirestore, assertIsCharacters } from 'app/firebase/firestore'
+
+const Home: NextPage = ({ regendsList }) => {
   return (
     <main>
-      <Box sx={{ backgroundImage: '' }}>
+      <Box sx={{ backgroundImage: backgroundImage }}>
         <Typography variant="h1" component="h1" gutterBottom className="text-3xl">
           Apexキャラ診断
         </Typography>

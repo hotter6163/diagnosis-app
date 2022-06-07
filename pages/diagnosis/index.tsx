@@ -1,4 +1,5 @@
-import type { NextPage } from 'next'
+import type { NextPage, GetStaticProps } from 'next'
+import Link from 'next/link'
 import {
   Button,
   Typography
@@ -6,9 +7,20 @@ import {
 
 import { fetcherFirestore, assertIsCharacters } from 'app/firebase/firestore'
 
-const Diagnosis = () => {
-  const result = fetcherFirestore('character')
-  console.log(result)
+const Diagnosis = ({ regendsList }) => {
+  const renderedRegendsList = regendsList.map(regend => (
+    <div key={regend.id}>
+      <Typography
+        variant="p"
+        sx={{ display: 'inline' }}
+      >
+        {regend.name}
+      </Typography>
+      <Link href={`/diagnosis/results/${regend.englishName}`}>
+        <a>結果ページへ</a>
+      </Link>
+    </div>
+  ))
 
   return (
     <main>
@@ -21,8 +33,21 @@ const Diagnosis = () => {
       <Button variant="contained" className="bg-blue-500" size="large">
         診断結果を見る
       </Button>
+      {renderedRegendsList}
     </main>
   )
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+  const fetchedData = await fetcherFirestore('character')
+
+  assertIsCharacters(fetchedData)
+
+  return {
+    props: {
+      regendsList: fetchedData
+    }
+  }
 }
 
 export default Diagnosis

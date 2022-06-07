@@ -1,6 +1,8 @@
 import type { NextPage, GetStaticPaths, GetStaticProps } from 'next'
-import { fetcherFirestore, assertIsCharacters } from 'app/firebase/firestore'
+import Link from 'next/link'
 import { Typography } from '@mui/material'
+
+import { fetcherFirestore, assertIsCharacters } from 'app/firebase/firestore'
 
 const Result: NextPage = ({ englishName }) => {
   return (
@@ -11,6 +13,9 @@ const Result: NextPage = ({ englishName }) => {
       <Typography variant="h2" component="h2" gutterBottom className="text-xl">
         {englishName}
       </Typography>
+      <Link href="/">
+        <a>top</a>
+      </Link>
     </main>
   )
 }

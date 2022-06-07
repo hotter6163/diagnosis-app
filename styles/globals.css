@@ -3,9 +3,10 @@
 @tailwind utilities;
 
 body {
-  margin: 0 1rem;
+
 }
 
 main {
+  padding: 0 1rem;
   text-align: center;
 }
