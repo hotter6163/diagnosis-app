@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+main {
+  padding: 0 1rem;
+  text-align: center;
+}
+
+main.top {
+  padding: 0;
+  background-image: url('../public/background-top.jpg');
+  background-repeat: no-repeat;
+  background-size: auto 100vh;
+  background-position: 35% 30%;
+  background-color: rgba(255,255,255,0.6);
+  background-blend-mode: lighten;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
