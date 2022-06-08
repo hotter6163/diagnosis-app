@@ -1,4 +1,4 @@
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import {
@@ -6,6 +6,7 @@ import {
   Button,
   Typography
 } from '@mui/material'
+
 
 const Home: NextPage = () => {
   return (
@@ -46,3 +47,11 @@ const Home: NextPage = () => {
 }
 
 export default Home
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {
+      page: 'top'
+    }
+  }
+}
