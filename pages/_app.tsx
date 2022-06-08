@@ -8,7 +8,6 @@ import '@fontsource/roboto/300.css';
 import { AppBar, Box, Toolbar, Typography } from '@mui/material';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  console.log(pageProps)
   return (
     <>
       <Head>
@@ -17,6 +16,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
         />
+        <title>Apexキャラ診断</title>
       </Head>
       {pageProps.page !== 'top' && <Header />}
       <Component {...pageProps} />
@@ -28,7 +28,7 @@ export default MyApp
 
 const Header: VFC = () => {
   return (
-    <AppBar position="static" color="transparent">
+    <AppBar position="static" color="transparent" className="bg-white">
       <Toolbar>
       　<Image
           src="/apex-logo.png"
