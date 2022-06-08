@@ -1,0 +1,18 @@
+[
+  {
+    "title": "あなたの立ち回りについて",
+    "questions": [
+      { "id": "question1-1", "question": "a" },
+      { "id": "question1-2", "question": "b" },
+      { "id": "question1-3", "question": "c" }
+    ]
+  },
+  {
+    "title": "あなたの打ち合い方について",
+    "questions": [
+      { "id": "question2-1", "question": "d" },
+      { "id": "question2-2", "question": "e" },
+      { "id": "question2-3", "question": "f" }
+    ]
+  }
+]
