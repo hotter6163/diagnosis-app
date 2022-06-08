@@ -5,10 +5,13 @@ import {
   Typography
 } from '@mui/material'
 
-import { fetcherFirestore, assertIsCharacters, CharacterType } from 'app/firebase/firestore'
+import {
+  fetchAllRegends,
+  RegendType
+} from 'app/firebase/firestore/regends'
 
 type PageProps = {
-  regendsList: CharacterType[]
+  regendsList: RegendType[]
 }
 
 const Diagnosis:NextPage<PageProps> = ({ regendsList }) => {
@@ -43,15 +46,13 @@ const Diagnosis:NextPage<PageProps> = ({ regendsList }) => {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const fetchedData = await fetcherFirestore('character')
-
-  assertIsCharacters(fetchedData)
+  const fetchedData = await fetchAllRegends()
 
   return {
     props: {
       regendsList: fetchedData
     }
-  } 
+  }
 }
 
 export default Diagnosis

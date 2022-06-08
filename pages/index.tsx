@@ -7,9 +7,6 @@ import {
   Typography
 } from '@mui/material'
 
-import backgroundImage from 'public/background-top.jpg'
-import { fetcherFirestore, assertIsCharacters } from 'app/firebase/firestore'
-
 const Home: NextPage = () => {
   return (
     <main className="top">

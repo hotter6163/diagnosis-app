@@ -2,7 +2,8 @@ import type { NextPage, GetStaticPaths, GetStaticProps } from 'next'
 import Link from 'next/link'
 import { Typography } from '@mui/material'
 
-import { fetcherFirestore, assertIsCharacters } from 'app/firebase/firestore'
+import { fetchAllRegends, assertIsRegends } from 'app/firebase/firestore/regends'
+
 
 type Props = {
   englishName: string
@@ -31,14 +32,12 @@ const Result: NextPage<Props> = ({ englishName }) => {
 export default Result
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const fetchedData = await fetcherFirestore('character')
+  const fetchedData = await fetchAllRegends()
 
-  assertIsCharacters(fetchedData)
-
-  const paths = fetchedData.map((character) => {
+  const paths = fetchedData.map((regend) => {
     return {
       params: {
-        id: character.englishName
+        id: regend.englishName
       }
     }
   })
