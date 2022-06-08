@@ -2,17 +2,17 @@
   {
     "title": "あなたの立ち回りについて",
     "questions": [
-      { "id": "question1-1", "question": "a" },
-      { "id": "question1-2", "question": "b" },
-      { "id": "question1-3", "question": "c" }
+      { "id": "question1-1", "question": "アンチ外に敵がいた時、その相手と戦いますか？" },
+      { "id": "question1-2", "question": "先に有利ポジションを取り、遠距離から攻撃するのが好きですか？" },
+      { "id": "question1-3", "question": "最初に激戦区に降下しますか？" }
     ]
   },
   {
     "title": "あなたの打ち合い方について",
     "questions": [
-      { "id": "question2-1", "question": "d" },
-      { "id": "question2-2", "question": "e" },
-      { "id": "question2-3", "question": "f" }
+      { "id": "question2-1", "question": "展開して、相手への射線を増やしますか？" },
+      { "id": "question2-2", "question": "味方の動きを見て自分の動きを決めるのが得意ですか？" },
+      { "id": "question2-3", "question": "持つならカービンよりR-99だ!" }
     ]
   }
 ]

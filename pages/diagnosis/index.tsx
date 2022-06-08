@@ -17,12 +17,12 @@ type PageQuestionsType = {
   questions: QuestionType[]
 }
 type Props = {
-  ids: string[]
+  questionNums: number[]
   questions: PageQuestionsType[]
 }
 type AnswersType = { [key: string]: boolean | null }
 
-const Diagnosis: NextPage<Props> = ({ ids, questions }) => {
+const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
   const [pageNum, setPageNum] = useState<0 | 1>(0)
   const [answers, setAnswers] = useState<AnswersType>({})
 
@@ -37,6 +37,7 @@ const Diagnosis: NextPage<Props> = ({ ids, questions }) => {
   useEffect(()=> {
     console.log(answers)
   }, [answers])
+
   const questionsComponent = (
     <section className="mt-3 bg-white p-3">
       <Typography
@@ -54,14 +55,18 @@ const Diagnosis: NextPage<Props> = ({ ids, questions }) => {
               component="p"
               className="text-xl font-medium"
             >
-              {`Q${index+1}：${question.question}`}
+              {`Q${index + questionNums[pageNum]}：${question.question}`}
             </Typography>
           </div>
           <div className="flex justify-around">
-            <Button className="first" onClick={() => handleAnswerClicked(question.id, true)}>
+            <Button
+              className="first"
+              onClick={() => handleAnswerClicked(question.id, true)}>
               はい
             </Button>
-            <Button className="last" onClick={() => handleAnswerClicked(question.id, false)}>
+            <Button
+              className="last"
+              onClick={() => handleAnswerClicked(question.id, false)}>
               いいえ
             </Button>
           </div>
@@ -93,16 +98,14 @@ export const getStaticProps: GetStaticProps = async () => {
   const jsonText = fs.readFileSync(jsonPath, 'utf-8')
   const questions = JSON.parse(jsonText) as PageQuestionsType[]
 
-  const ids: string[] = []
-  questions.forEach(row => {
-    row.questions.forEach(cell => {
-      ids.push(cell.id)
-    })
+  const questionNums: number[] = [1]
+  questions.forEach((row, index) => {
+    questionNums.push(questionNums[index] + row.questions.length)
   })
 
   return {
     props: {
-      ids,
+      questionNums,
       questions
     }
   }
