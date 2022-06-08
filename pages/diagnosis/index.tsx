@@ -20,16 +20,21 @@ type Props = {
   questionNums: number[]
   questions: PageQuestionsType[]
 }
-type AnswersType = { [key: string]: boolean | null }
+type AnswersType = { [key: string]: boolean }
 
-const BUTTON_CLASSES = "w-2/5 border-solid rounded-lg border-2 text-xl py-4 font-semibold text-black"
+const SELECT_BUTTON_CLASSES = "w-2/5 border-solid rounded-lg border-2 text-xl py-4 font-semibold text-black"
+const SUBMIT_BUTTON_CLASSES = "border-solid rounded-lg border-2 text-xl w-full"
 
 const MAX_PAGE_NUM = 2
 
 const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
-  const [pageNum, setPageNum] = useState<1 | 2>(1)
+  // コンパイル時にエラーが発生するため、型はnumberに設定
+  // 本当は 1 <= num <= MAX_PAGE_NUM の型にしたい
+  const [pageNum, setPageNum] = useState<number>(1)
   const [answers, setAnswers] = useState<AnswersType>({})
 
+  // 回答をオブジェクトに保存するための関数
+  // 引数が必要なため、直でonClickには入れれない
   const handleAnswerClicked = (id: string, answer: boolean) => {
     setAnswers((prevValue) => {
       const clone: AnswersType = Object.assign({}, prevValue)
@@ -38,6 +43,8 @@ const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
     })
   }
 
+  // 質問に対しての回答を受け取るためのコンポーネント
+  // pageNumでjsonファイルから取得した配列にアクセスし、その要素に合わせてレンダリングしている
   const questionsComponent = (
     <section className="mt-3 bg-white p-3">
       <Typography
@@ -61,7 +68,7 @@ const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
           <div className="flex justify-around mt-5 mb-8">
             <Button
             className={`
-              ${BUTTON_CLASSES}
+              ${SELECT_BUTTON_CLASSES}
               ${answers[question.id] === true && "text-white border-blue-400 bg-blue-400"}
             `}
               onClick={() => handleAnswerClicked(question.id, true)}
@@ -70,7 +77,7 @@ const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
             </Button>
             <Button
               className={`
-                ${BUTTON_CLASSES}
+                ${SELECT_BUTTON_CLASSES}
                 ${answers[question.id] === false && "text-white border-red-400 bg-red-400"}
               `}
               onClick={() => handleAnswerClicked(question.id, false)}
@@ -80,6 +87,46 @@ const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
           </div>
         </div>
       ))}
+
+      {
+        // ページ遷移のためのボタン
+        // 【疑問点】
+        // 基本的にそのページの質問全てに回答していないと次のページに進めない使用にしているため、
+        // 診断ボタンは最終ページの全ての回答状況で押せるか動かを判断するようにしていがそれで良いのか？
+      }
+      <div className="flex">
+        <div className="w-1/3 p-1">
+          {pageNum !== 1 && (
+            <Button
+              className={`${SUBMIT_BUTTON_CLASSES}`}
+              onClick={() => setPageNum(pageNum-1)}
+            >
+              戻る
+            </Button>
+          )}
+        </div>
+        <div className="w-1/3 p-1">
+          {pageNum === MAX_PAGE_NUM && (
+            <Button
+              className={`${SUBMIT_BUTTON_CLASSES}`}
+              disabled={!questions[pageNum-1]["questions"].every((question) => answers[question.id] !== undefined)}
+            >
+              診断する
+            </Button>
+          )}
+        </div>
+        <div className="w-1/3 p-1">
+        {pageNum !== MAX_PAGE_NUM && (
+          <Button
+            className={`${SUBMIT_BUTTON_CLASSES}`}
+            onClick={() => setPageNum(pageNum+1)}
+            disabled={!questions[pageNum-1]["questions"].every((question) => answers[question.id] !== undefined)}
+          >
+            次へ
+          </Button>
+        )}
+        </div>
+      </div>
     </section>
   )
 
@@ -94,9 +141,6 @@ const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
         Apexキャラ診断
       </Typography>
       {questionsComponent}
-      <Button onClick={pageNum-1 === 1 ? () => setPageNum(1) : () => setPageNum(2)}>
-        次の質問へ
-      </Button>
     </main>
   )
 }
