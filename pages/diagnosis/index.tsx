@@ -5,7 +5,7 @@ import {
 } from '@mui/material'
 import * as fs from 'fs'
 import * as path from 'path'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 
 type QuestionType = {
@@ -22,8 +22,12 @@ type Props = {
 }
 type AnswersType = { [key: string]: boolean | null }
 
+const BUTTON_CLASSES = "w-2/5 border-solid rounded-lg border-2 text-xl py-4 font-semibold text-black"
+
+const MAX_PAGE_NUM = 2
+
 const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
-  const [pageNum, setPageNum] = useState<0 | 1>(0)
+  const [pageNum, setPageNum] = useState<1 | 2>(1)
   const [answers, setAnswers] = useState<AnswersType>({})
 
   const handleAnswerClicked = (id: string, answer: boolean) => {
@@ -34,20 +38,16 @@ const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
     })
   }
 
-  useEffect(()=> {
-    console.log(answers)
-  }, [answers])
-
   const questionsComponent = (
     <section className="mt-3 bg-white p-3">
       <Typography
         variant="h2"
         component="h2"
-        className="text-xl font-medium mb-4"
+        className="text-2xl font-medium mb-4"
       >
-        {questions[pageNum]["title"]}
+        {questions[pageNum-1]["title"]}
       </Typography>
-      {questions[pageNum]["questions"].map((question, index) => (
+      {questions[pageNum-1]["questions"].map((question, index) => (
         <div key={question.id} className="mb-3">
           <div className="pb-1 border-b-2 border-yellow-200 text-left">
             <Typography
@@ -55,18 +55,26 @@ const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
               component="p"
               className="text-xl font-medium"
             >
-              {`Q${index + questionNums[pageNum]}：${question.question}`}
+              {`Q${index + questionNums[pageNum-1]}：${question.question}`}
             </Typography>
           </div>
-          <div className="flex justify-around">
+          <div className="flex justify-around mt-5 mb-8">
             <Button
-              className="first"
-              onClick={() => handleAnswerClicked(question.id, true)}>
+            className={`
+              ${BUTTON_CLASSES}
+              ${answers[question.id] === true && "text-white border-blue-400 bg-blue-400"}
+            `}
+              onClick={() => handleAnswerClicked(question.id, true)}
+            >
               はい
             </Button>
             <Button
-              className="last"
-              onClick={() => handleAnswerClicked(question.id, false)}>
+              className={`
+                ${BUTTON_CLASSES}
+                ${answers[question.id] === false && "text-white border-red-400 bg-red-400"}
+              `}
+              onClick={() => handleAnswerClicked(question.id, false)}
+            >
               いいえ
             </Button>
           </div>
@@ -86,8 +94,8 @@ const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
         Apexキャラ診断
       </Typography>
       {questionsComponent}
-      <Button onClick={pageNum === 1 ? () => setPageNum(0) : () => setPageNum(1)}>
-        次のページへ
+      <Button onClick={pageNum-1 === 1 ? () => setPageNum(1) : () => setPageNum(2)}>
+        次の質問へ
       </Button>
     </main>
   )
