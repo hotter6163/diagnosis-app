@@ -1,13 +1,15 @@
-import type { VFC } from 'react'
+import { VFC, useState, createContext } from 'react'
 import '../styles/globals.scss'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
 import '@fontsource/roboto/300.css';
-import { AppBar, Box, Toolbar, Typography } from '@mui/material';
+import { AppBar, Toolbar, Typography } from '@mui/material';
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const [answers, setAnswers] = useState<AnswersType>({})
+
   return (
     <>
       <Head>
@@ -19,12 +21,21 @@ function MyApp({ Component, pageProps }: AppProps) {
         <title>Apexキャラ診断</title>
       </Head>
       {pageProps.page !== 'top' && <Header />}
-      <Component {...pageProps} />
+      <AnswersContext.Provider value={{ answers, setAnswers }}>
+        <Component {...pageProps} />
+      </AnswersContext.Provider>
     </>
   )
 }
 
 export default MyApp
+
+type AnswersType = { [key: string]: boolean }
+type ContextType = {
+  answers: AnswersType
+  setAnswers: React.Dispatch<React.SetStateAction<AnswersType>>
+}
+export const AnswersContext = createContext<ContextType>({} as ContextType)
 
 const Header: VFC = () => {
   return (

@@ -1,14 +1,21 @@
-import type { NextPage, GetServerSideProps } from 'next'
+import type { NextPage, GetStaticProps } from 'next'
 import Image from 'next/image'
-import { RegendType, fetchRegendByEnglishName } from 'app/firebase/firestore/regends'
+import { fetchRegendByEnglishName } from 'app/firebase/firestore/regends'
 import { Button, Typography } from '@mui/material'
 import Link from 'next/link'
+import { fetchQuestionsJson } from 'libs/fetchQuestionsJson'
 
 type Props = {
-  regend: RegendType
+  ids: string[]
 }
 
-const Result: NextPage<Props> = ({ regend }) => {
+const Result: NextPage<Props> = ({ ids }) => {
+  const regend = {
+    id: 'hoge',
+    name: 'ブラッドハウンド',
+    englishName: 'bloodhound'
+  }
+
   return (
     <main>
       <Typography
@@ -48,20 +55,19 @@ const Result: NextPage<Props> = ({ regend }) => {
 
 export default Result
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  // post以外を弾くように設定
-  if (req.method !== 'POST') {
-    return {
-      redirect: {
-        destination: '/diagnosis',
-        permanent: false,
-      },
-    }
-  }
-  const regend = await fetchRegendByEnglishName('bloodhound')
+export const getStaticProps: GetStaticProps = async () => {
+  const questins = fetchQuestionsJson()
+
+  const ids: string[] = []
+  questins.forEach(row => {
+    row.questions.forEach(cell => {
+      ids.push(cell.id)
+    })
+  })
+
   return {
     props: {
-      regend
+      ids
     }
   }
 }

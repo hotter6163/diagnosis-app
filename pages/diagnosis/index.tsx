@@ -3,19 +3,12 @@ import {
   Button,
   Typography
 } from '@mui/material'
-import * as fs from 'fs'
-import * as path from 'path'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import Link from 'next/link'
 
+import { AnswersContext } from 'pages/_app'
+import { PageQuestionsType, fetchQuestionsJson } from 'libs/fetchQuestionsJson'
 
-type QuestionType = {
-  id: string
-  question: string
-}
-type PageQuestionsType = {
-  title: string
-  questions: QuestionType[]
-}
 type Props = {
   ids: string[]
   questionNums: number[]
@@ -32,38 +25,19 @@ const Diagnosis: NextPage<Props> = ({ ids, questionNums, questions }) => {
   // コンパイル時にエラーが発生するため、型はnumberに設定
   // 本当は 1 <= num <= MAX_PAGE_NUM の型にしたい
   const [pageNum, setPageNum] = useState<number>(1)
-  const [answers, setAnswers] = useState<AnswersType>({})
+  const { answers, setAnswers }  = useContext(AnswersContext)
 
   // 回答をオブジェクトに保存するための関数
   // 引数が必要なため、直でonClickには入れれない
   const handleAnswerClicked = (id: string, answer: boolean) => {
     setAnswers((prevValue) => {
-      const clone: AnswersType = Object.assign({}, prevValue)
+      const clone = Object.assign({}, prevValue)
       clone[id] = answer
       return clone
     })
   }
 
   const isDisabledButton = !questions[pageNum-1]["questions"].every((question) => answers[question.id] !== undefined)
-
-  // resultページのpostするform
-  const diagnosisForm = (
-    <form method="post" action={path.join('diagnosis', 'results')} className="my-3">
-      {ids.map(id => {
-        if (answers[id] !== undefined) {
-          return (
-            <input type="hidden" name={id} value={answers[id].toString()} />
-          )
-        }
-      })}
-      <input
-        type="submit"
-        value="診断する"
-        className={`border-solid rounded-lg border-2 text-xl font-medium w-1/2 py-2 ${isDisabledButton ? `text-gray-400` : `border-blue-500 text-blue-500`}`}
-        disabled={isDisabledButton}
-      />
-    </form>
-  )
 
   // 質問に対しての回答を受け取るためのコンポーネント
   // pageNumでjsonファイルから取得した配列にアクセスし、その要素に合わせてレンダリングしている
@@ -117,12 +91,23 @@ const Diagnosis: NextPage<Props> = ({ ids, questionNums, questions }) => {
         // 基本的にそのページの質問全てに回答していないと次のページに進めない使用にしているため、
         // 診断ボタンは最終ページの全ての回答状況で押せるか動かを判断するようにしていがそれで良いのか？
       }
-      {pageNum === MAX_PAGE_NUM && diagnosisForm}
+      {pageNum === MAX_PAGE_NUM && (
+        <div className="my-3">
+          <Button
+            className={`border-solid rounded-lg border-2 w-1/2 py-2 ${isDisabledButton ? `text-gray-400` : `border-blue-500 text-blue-500`}`}
+            disabled={isDisabledButton}
+          >
+            <Link href="/diagnosis/results">
+              <a className="text-xl font-medium">診断する</a>
+            </Link>
+          </Button>
+        </div>
+      )}
       <div className="flex justify-between my-3">
         <div className="w-2/5 p-1">
           {pageNum !== 1 && (
             <Button
-              className={`${PAGE_TRANSITION_BUTTON_CLASSES}`}
+              className={`${PAGE_TRANSITION_BUTTON_CLASSES} text-gray-600`}
               onClick={() => setPageNum(pageNum-1)}
             >
               戻る
@@ -132,7 +117,7 @@ const Diagnosis: NextPage<Props> = ({ ids, questionNums, questions }) => {
         <div className="w-2/5 p-1">
           {pageNum !== MAX_PAGE_NUM && (
             <Button
-              className={`${PAGE_TRANSITION_BUTTON_CLASSES}`}
+              className={`${PAGE_TRANSITION_BUTTON_CLASSES} ${isDisabledButton || "text-gray-600" }`}
               onClick={() => setPageNum(pageNum+1)}
               disabled={isDisabledButton}
             >
@@ -165,9 +150,7 @@ const Diagnosis: NextPage<Props> = ({ ids, questionNums, questions }) => {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const jsonPath = path.join(process.cwd(), 'data', 'questions.json')
-  const jsonText = fs.readFileSync(jsonPath, 'utf-8')
-  const questions = JSON.parse(jsonText) as PageQuestionsType[]
+  const questions = fetchQuestionsJson()
 
   const questionNums: number[] = [1]
   const ids: string[] = []
