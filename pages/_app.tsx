@@ -30,7 +30,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 export default MyApp
 
-type AnswersType = { [key: string]: boolean }
+export type AnswersType = { [key: string]: boolean }
 type ContextType = {
   answers: AnswersType
   setAnswers: React.Dispatch<React.SetStateAction<AnswersType>>

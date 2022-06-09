@@ -70,6 +70,15 @@ export const fetchAllRegends = async (): Promise<RegendType[]> => {
   return allData
 }
 
+export const fetchorRegendByEnglishName = (key: RegendNameType) => {
+  return getDocs(
+    query(
+      collection(db, 'character'),
+      where('englishName', '==', key)
+    )
+  )
+}
+
 export const fetchRegendByEnglishName =  async (name: RegendNameType): Promise<RegendType> => {
   const snapshot = await getDocs(
     query(
@@ -77,7 +86,7 @@ export const fetchRegendByEnglishName =  async (name: RegendNameType): Promise<R
       where('englishName', '==', name)
     )
   )
-  
+
   const allData = snapshot.docs.map((doc) => {
     return {
       id: doc.id,
