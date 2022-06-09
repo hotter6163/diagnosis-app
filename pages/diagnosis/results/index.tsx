@@ -48,17 +48,16 @@ const Result: NextPage<Props> = ({ regend }) => {
 
 export default Result
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   // post以外を弾くように設定
-  // 今はコメントアウト
-  // if (req.method !== 'POST') {
-  //   return {
-  //     redirect: {
-  //       destination: '/diagnosis',
-  //       permanent: false,
-  //     },
-  //   }
-  // }
+  if (req.method !== 'POST') {
+    return {
+      redirect: {
+        destination: '/diagnosis',
+        permanent: false,
+      },
+    }
+  }
   const regend = await fetchRegendByEnglishName('bloodhound')
   return {
     props: {

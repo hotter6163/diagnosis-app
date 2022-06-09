@@ -17,6 +17,7 @@ type PageQuestionsType = {
   questions: QuestionType[]
 }
 type Props = {
+  ids: string[]
   questionNums: number[]
   questions: PageQuestionsType[]
 }
@@ -27,7 +28,7 @@ const PAGE_TRANSITION_BUTTON_CLASSES = "border-solid rounded-lg border-2 text-xl
 
 const MAX_PAGE_NUM = 2
 
-const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
+const Diagnosis: NextPage<Props> = ({ ids, questionNums, questions }) => {
   // コンパイル時にエラーが発生するため、型はnumberに設定
   // 本当は 1 <= num <= MAX_PAGE_NUM の型にしたい
   const [pageNum, setPageNum] = useState<number>(1)
@@ -42,6 +43,27 @@ const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
       return clone
     })
   }
+
+  const isDisabledButton = !questions[pageNum-1]["questions"].every((question) => answers[question.id] !== undefined)
+
+  // resultページのpostするform
+  const diagnosisForm = (
+    <form method="post" action={path.join('diagnosis', 'results')} className="my-3">
+      {ids.map(id => {
+        if (answers[id] !== undefined) {
+          return (
+            <input type="hidden" name={id} value={answers[id].toString()} />
+          )
+        }
+      })}
+      <input
+        type="submit"
+        value="診断する"
+        className={`border-solid rounded-lg border-2 text-xl font-medium w-1/2 py-2 ${isDisabledButton ? `text-gray-400` : `border-blue-500 text-blue-500`}`}
+        disabled={isDisabledButton}
+      />
+    </form>
+  )
 
   // 質問に対しての回答を受け取るためのコンポーネント
   // pageNumでjsonファイルから取得した配列にアクセスし、その要素に合わせてレンダリングしている
@@ -95,17 +117,8 @@ const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
         // 基本的にそのページの質問全てに回答していないと次のページに進めない使用にしているため、
         // 診断ボタンは最終ページの全ての回答状況で押せるか動かを判断するようにしていがそれで良いのか？
       }
-      {pageNum === MAX_PAGE_NUM && (
-        <div className="p-1 text-center">
-          <Button
-            className={`border-solid rounded-lg border-2 text-xl w-1/2`}
-            disabled={!questions[pageNum-1]["questions"].every((question) => answers[question.id] !== undefined)}
-          >
-            診断する
-          </Button>
-        </div>
-      )}
-      <div className="flex justify-between">
+      {pageNum === MAX_PAGE_NUM && diagnosisForm}
+      <div className="flex justify-between my-3">
         <div className="w-2/5 p-1">
           {pageNum !== 1 && (
             <Button
@@ -121,7 +134,7 @@ const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
             <Button
               className={`${PAGE_TRANSITION_BUTTON_CLASSES}`}
               onClick={() => setPageNum(pageNum+1)}
-              disabled={!questions[pageNum-1]["questions"].every((question) => answers[question.id] !== undefined)}
+              disabled={isDisabledButton}
             >
               次へ
             </Button>
@@ -157,12 +170,17 @@ export const getStaticProps: GetStaticProps = async () => {
   const questions = JSON.parse(jsonText) as PageQuestionsType[]
 
   const questionNums: number[] = [1]
+  const ids: string[] = []
   questions.forEach((row, index) => {
     questionNums.push(questionNums[index] + row.questions.length)
+    row.questions.forEach(cell => {
+      ids.push(cell.id)
+    })
   })
 
   return {
     props: {
+      ids,
       questionNums,
       questions
     }
