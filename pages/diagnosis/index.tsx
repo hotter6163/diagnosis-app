@@ -22,8 +22,8 @@ type Props = {
 }
 type AnswersType = { [key: string]: boolean }
 
-const SELECT_BUTTON_CLASSES = "w-2/5 border-solid rounded-lg border-2 text-xl py-4 font-semibold text-black"
-const SUBMIT_BUTTON_CLASSES = "border-solid rounded-lg border-2 text-xl w-full"
+const SELECT_BUTTON_CLASSES = "w-2/5 border-solid rounded-lg border-2 text-xl py-3 font-semibold text-black"
+const PAGE_TRANSITION_BUTTON_CLASSES = "border-solid rounded-lg border-2 text-xl w-full"
 
 const MAX_PAGE_NUM = 2
 
@@ -51,11 +51,12 @@ const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
         variant="h2"
         component="h2"
         className="text-2xl font-medium mb-4"
+        id="question-title"
       >
         {questions[pageNum-1]["title"]}
       </Typography>
       {questions[pageNum-1]["questions"].map((question, index) => (
-        <div key={question.id} className="mb-3">
+        <div key={question.id} className="mb-3" id={question.id}>
           <div className="pb-1 border-b-2 border-yellow-200 text-left">
             <Typography
               variant="inherit"
@@ -94,37 +95,37 @@ const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
         // 基本的にそのページの質問全てに回答していないと次のページに進めない使用にしているため、
         // 診断ボタンは最終ページの全ての回答状況で押せるか動かを判断するようにしていがそれで良いのか？
       }
-      <div className="flex">
-        <div className="w-1/3 p-1">
+      {pageNum === MAX_PAGE_NUM && (
+        <div className="p-1 text-center">
+          <Button
+            className={`border-solid rounded-lg border-2 text-xl w-1/2`}
+            disabled={!questions[pageNum-1]["questions"].every((question) => answers[question.id] !== undefined)}
+          >
+            診断する
+          </Button>
+        </div>
+      )}
+      <div className="flex justify-between">
+        <div className="w-2/5 p-1">
           {pageNum !== 1 && (
             <Button
-              className={`${SUBMIT_BUTTON_CLASSES}`}
+              className={`${PAGE_TRANSITION_BUTTON_CLASSES}`}
               onClick={() => setPageNum(pageNum-1)}
             >
               戻る
             </Button>
           )}
         </div>
-        <div className="w-1/3 p-1">
-          {pageNum === MAX_PAGE_NUM && (
+        <div className="w-2/5 p-1">
+          {pageNum !== MAX_PAGE_NUM && (
             <Button
-              className={`${SUBMIT_BUTTON_CLASSES}`}
+              className={`${PAGE_TRANSITION_BUTTON_CLASSES}`}
+              onClick={() => setPageNum(pageNum+1)}
               disabled={!questions[pageNum-1]["questions"].every((question) => answers[question.id] !== undefined)}
             >
-              診断する
+              次へ
             </Button>
           )}
-        </div>
-        <div className="w-1/3 p-1">
-        {pageNum !== MAX_PAGE_NUM && (
-          <Button
-            className={`${SUBMIT_BUTTON_CLASSES}`}
-            onClick={() => setPageNum(pageNum+1)}
-            disabled={!questions[pageNum-1]["questions"].every((question) => answers[question.id] !== undefined)}
-          >
-            次へ
-          </Button>
-        )}
         </div>
       </div>
     </section>
@@ -141,6 +142,11 @@ const Diagnosis: NextPage<Props> = ({ questionNums, questions }) => {
         Apexキャラ診断
       </Typography>
       {questionsComponent}
+      {
+        // スクロールできるように挿入しているが、もっとうまい方法があれば変更したい
+      }
+      <div className="h-80">
+      </div>
     </main>
   )
 }

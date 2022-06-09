@@ -9,8 +9,6 @@ type Props = {
 }
 
 const Result: NextPage<Props> = ({ regend }) => {
-  console.log(typeof regend)
-
   return (
     <main>
       <Typography
